@@ -9,12 +9,12 @@ const (
 	// Project
 	PROJECT_NAME = "Echo Web"
 
-	SERVER_ADDR = ":8080"
+	SERVER_ADDR = ":5178"
 
 	// Domains
-	DOMAIN_API    = "echo.api.localhost.com"
-	DOMAIN_WWW    = "echo.www.localhost.com"
-	DOMAIN_SOCKET = "echo.socket.localhost.com"
+	DOMAIN_API    = "api.men.n.mi.com"
+	DOMAIN_WWW    = "men.n.mi.com"
+	DOMAIN_SOCKET = "socket.api.men.n.mi.com"
 
 	// Session
 	SESSION_STORE = REDIS // REDIS,FILE,COOKIE(COOKIE Default)
@@ -32,15 +32,15 @@ const (
 	STATIC_TYPE = BINDATA // BINDATA,FILE(FILE Default)
 
 	// MySQL
-	DB_NAME      = "goweb_db"
-	DB_USER_NAME = "goweb_dba"
-	DB_PASSWORD  = "123456"
+	DB_NAME      = "xmstore-act"
+	DB_USER_NAME = "root"
+	DB_PASSWORD  = ""
 	DB_HOST      = "127.0.0.1"
 	DB_PORT      = "3306"
 
 	// Redis
 	REDIS_SERVER = "127.0.0.1:6379"
-	REDIS_PWD    = "123456"
+	REDIS_PWD    = ""
 
 	// Memcached
 	MEMCACHED_SERVER = "localhost:11211"
