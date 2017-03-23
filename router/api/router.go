@@ -5,9 +5,6 @@ import (
 
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
-	"github.com/labstack/gommon/log"
-
-	"github.com/hobo-go/echo-mw/binder"
 
 	"echo-web/conf"
 	"echo-web/module/cache"
@@ -26,7 +23,7 @@ func Routers() *echo.Echo {
 
 	// Customization
 	e.Logger.SetPrefix("Echo")
-	e.Logger.SetLevel(log.DEBUG)
+	e.Logger.SetLevel(conf.LOG_LEVEL)
 
 	if conf.RELEASE_MODE {
 		// e.SetDebug(false)
@@ -47,9 +44,6 @@ func Routers() *echo.Echo {
 	e.Use(mw.Recover())
 
 	e.Static("/favicon.ico", "./assets/img/favicon.ico")
-
-	// Binder
-	e.Binder = binder.New()
 
 	// Session
 	e.Use(session.Session())

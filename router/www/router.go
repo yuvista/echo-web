@@ -3,9 +3,8 @@ package www
 import (
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
-	"github.com/labstack/gommon/log"
 
-	"github.com/hobo-go/echo-mw/binder"
+	"github.com/hobo-go/echo-mw/captcha"
 	"github.com/hobo-go/echo-mw/staticbin"
 
 	"echo-web/assets"
@@ -29,10 +28,10 @@ func Routers() *echo.Echo {
 
 	// Customization
 	if conf.RELEASE_MODE {
-		// e.SetDebug(false)
+		e.Debug = false
 	}
 	e.Logger.SetPrefix("Echo")
-	e.Logger.SetLevel(log.DEBUG)
+	e.Logger.SetLevel(conf.LOG_LEVEL)
 
 	// CSRF
 	e.Use(mw.CSRFWithConfig(mw.CSRFConfig{
@@ -40,29 +39,33 @@ func Routers() *echo.Echo {
 		TokenLookup: "form:_csrf",
 	}))
 
-	// Gzip
-	e.Use(mw.GzipWithConfig(mw.GzipConfig{
-		Level: 5,
-	}))
-
 	// Middleware
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
+
+	// 验证码，优先于静态资源
+	e.Use(captcha.Captcha(captcha.Config{
+		CaptchaPath: "/captcha/",
+		SkipLogging: true,
+	}))
 
 	// 静态资源
 	switch conf.STATIC_TYPE {
 	case conf.BINDATA:
 		e.Use(staticbin.Static(assets.Asset, staticbin.Options{
-			Dir: "/",
-			SkipLogging:true,
+			Dir:         "/",
+			SkipLogging: true,
 		}))
 	default:
 		e.Static("/assets", "./assets")
 	}
 
-	// Binder
-	e.Binder = binder.New()
-	
+	// Gzip，在验证码、静态资源之后
+	// 验证码、静态资源使用http.ServeContent()，与Gzip有冲突，Nginx报错，验证码无法访问
+	e.Use(mw.GzipWithConfig(mw.GzipConfig{
+		Level: 5,
+	}))
+
 	// 模板
 	e.Renderer = render.LoadTemplates()
 	e.Use(render.Render())
